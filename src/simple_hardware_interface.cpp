@@ -1,5 +1,6 @@
 #include <sstream>
 #include <simple_ros_control_main/simple_hardware_interface.h>
+#include <communication_interface/communication_interface.h>
 
 int count = 0;
 
