@@ -1,0 +1,10 @@
+<launch>
+
+	<rosparam file="$(find simple_robot_config)/config/controller_list.yaml" ns="/move_group"/>
+  <param name="/move_group/use_controller_manager" value="false"/>
+  <param name="/move_group/trajectory_execution/execution_duration_monitoring" value="false"/>
+  <param name="/move_group/moveit_controller_manager" value="moveit_simple_controller_manager/MoveItSimpleControllerManager"/>
+
+  <include file="$(find simple_robot_moveit_config)/launch/demo.launch"/>
+
+</launch>
