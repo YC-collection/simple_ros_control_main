@@ -9,7 +9,7 @@ int main(int argc, char **argv)
 
   int n_dof_, update_freq_;
   std::vector<std::string> jnt_names_;
-  std::vector<float> gear_ratios_;
+  std::vector<double> gear_ratios_;
 
   if (!nh.getParam("/robot/n_dof", n_dof_))
   {
