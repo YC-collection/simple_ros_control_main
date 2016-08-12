@@ -8,6 +8,7 @@ int main(int argc, char **argv)
   ros::NodeHandle nh;
 
   int n_dof_, update_freq_;
+  std::string comm_type_;
   std::vector<std::string> jnt_names_;
   std::vector<double> gear_ratios_;
 
@@ -54,8 +55,16 @@ int main(int argc, char **argv)
   else
 	std::cout << "update frequency = " << update_freq_ << std::endl;
 
+  if (!nh.getParam("/robot/comm_type", comm_type_))
+  {
+	ROS_ERROR("Please specify the communication type (n_dof).");
+	return 1;
+  }
+  else
+	std::cout << "comm_type_ = " << comm_type_ << std::endl;
 
-  SpHwInterface robot(n_dof_, update_freq_, jnt_names_, gear_ratios_);
+
+  SpHwInterface robot(n_dof_, update_freq_, comm_type_, jnt_names_, gear_ratios_);
   controller_manager::ControllerManager cm(&robot, nh);
 
   // start loop
