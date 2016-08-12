@@ -18,7 +18,7 @@
 class SpHwInterface : public hardware_interface::RobotHW
 {
 public:
-  SpHwInterface(unsigned int, unsigned int, std::vector<std::string>, std::vector<double>);
+  SpHwInterface(unsigned int, unsigned int, std::string, std::vector<std::string>, std::vector<double>);
   ~SpHwInterface();
 
   //void read();
@@ -30,10 +30,11 @@ public:
 private:
   unsigned int n_dof_;
   unsigned int update_freq_;
+  std::string comm_type_;
 
   std::vector<std::string> jnt_names_;
   std::vector<double> gear_ratios_;
-  std::vector<double> jnt_home_pos_;
+  std::vector<double> act_home_pos_;
 
   // Hardware Interface
   hardware_interface::JointStateInterface    jnt_state_interface_;

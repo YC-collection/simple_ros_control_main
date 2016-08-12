@@ -2,15 +2,18 @@
 #include <simple_ros_control_main/simple_hardware_interface.h>
 #include <communication_interface/communication_interface.h>
 
+#define FAKE 1
+
 int count = 0;
 
 SpHwInterface::SpHwInterface(
-	unsigned int m_n_dof_, unsigned int m_update_freq_, 
+	unsigned int m_n_dof_, unsigned int m_update_freq_, std::string m_comm_type_, 
 	std::vector<std::string> m_jnt_names_, std::vector<double> m_gear_ratios_)
 {
   // Initialize private members
   n_dof_ = m_n_dof_;
-  update_freq_ = m_update_freq_ ;
+  update_freq_ = m_update_freq_;
+  comm_type_ = m_comm_type_;
   jnt_names_= m_jnt_names_;
   gear_ratios_= m_gear_ratios_; 
 
@@ -112,10 +115,11 @@ SpHwInterface::SpHwInterface(
 		transmission_interface::JointToActuatorStateHandle(ss_temp.str(), &sim_trans_[i], act_cmd_data_[i], jnt_cmd_data_[i]));
   }
 
-#if 0
-  jnt_home_pos_ = communication_interface::get_curr_pos();
-  jnt_curr_pos_ = communication_interface::get_curr_pos();
-#endif
+  if(comm_type_ != "fake")
+  {
+    act_home_pos_ = communication_interface::get_curr_pos();
+    act_curr_pos_ = communication_interface::get_curr_pos();
+  }
 }
 
 SpHwInterface::~SpHwInterface()
@@ -124,29 +128,63 @@ SpHwInterface::~SpHwInterface()
 
 void SpHwInterface::update()
 {
-  // Fake reading
-  for(size_t i = 0; i< n_dof_; i++)
+  // Fake updating, just for demo.
+  if(comm_type_ == "fake")
+  {
+	// Fake reading
+	for(size_t i = 0; i< n_dof_; i++)
 	act_curr_pos_[i] = act_cmd_pos_[i];
 
-  act_to_jnt_state_.propagate();
-#if 0
-  // Handle current position (for reading) 
-  for(size_t i = 0; i < n_dof_; i++)
-    jnt_curr_pos_[i] = jnt_cmd_pos_[i];
-#endif
+	act_to_jnt_state_.propagate();
+	jnt_to_act_state_.propagate();
 
-  jnt_to_act_state_.propagate();
 #if 1
-  if(count % 100 ==0)
-  {
+	if(count % 100 ==0)
+	{
 	  std::cout << "write at " << std::setprecision(13) << ros::Time::now().toSec() << " s : " << std::endl;
 	  for(size_t i = 0; i < n_dof_; i++)
 		std::cout << jnt_names_[i] << ": joint = "<< jnt_cmd_pos_[i]
 								   << "; actuator = " << act_cmd_pos_[i] << std::endl;
 	  std::cout << std::endl;
-  }
-  count ++;
+	}
+	count ++;
 #endif
+  }
+
+  // Use ethercat
+  if(comm_type_ == "ethercat")
+  {
+	// Substract home pos, so the act_curr_pos_ will be initialized as zero. 
+	// This makes the ros control manager think the robot joints are at 0 degree.
+	for(size_t i = 0; i < act_home_pos_.size(); i++)
+	act_curr_pos_[i] -= act_home_pos_[i];
+
+	// Transform actuator space to joint space to let ros controller knows the robot state, 
+	// and then transform the new joint command back to actuator space command.
+	act_to_jnt_state_.propagate();  // The ros control manager will know the joint space value
+								  // and calculate new commands (joint space) after this step.
+	jnt_to_act_state_.propagate();
+
+	// Add home pos, because this is what the real value needs to write to actuator.
+	for(size_t i = 0; i < act_home_pos_.size(); i++)
+	act_curr_pos_[i] += act_home_pos_[i];
+
+	// Update the actuator
+	act_curr_pos_ = communication_interface::update(act_cmd_pos_);
+
+#if 1
+	if(count % 100 ==0)
+	{
+	  std::cout << "write at " << std::setprecision(13) << ros::Time::now().toSec() << " s : " << std::endl;
+	  for(size_t i = 0; i < n_dof_; i++)
+		std::cout << jnt_names_[i] << ": joint = "<< jnt_cmd_pos_[i]
+								   << "; actuator = " << act_cmd_pos_[i] << std::endl;
+	  std::cout << std::endl;
+	}
+	count ++;
+#endif
+  }
+
 }
 
 ros::Time SpHwInterface::getTime() const 
