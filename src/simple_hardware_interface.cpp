@@ -115,11 +115,16 @@ SpHwInterface::SpHwInterface(
 		transmission_interface::JointToActuatorStateHandle(ss_temp.str(), &sim_trans_[i], act_cmd_data_[i], jnt_cmd_data_[i]));
   }
 
-  if(comm_type_ != "fake")
+#if 1
+  if(comm_type_ == "ethercat")
   {
-    act_home_pos_ = communication_interface::get_curr_pos();
-    act_curr_pos_ = communication_interface::get_curr_pos();
+	communication_interface::init();
+    act_home_pos_ = communication_interface::get_home_pos();
+    act_curr_pos_ = communication_interface::get_home_pos();
+	for(int i = 0; i < act_curr_pos_.size(); i++)
+		std::cout << act_curr_pos_[i] << std::endl;
   }
+#endif
 }
 
 SpHwInterface::~SpHwInterface()
@@ -157,17 +162,13 @@ void SpHwInterface::update()
 	// Substract home pos, so the act_curr_pos_ will be initialized as zero. 
 	// This makes the ros control manager think the robot joints are at 0 degree.
 	for(size_t i = 0; i < act_home_pos_.size(); i++)
-	act_curr_pos_[i] -= act_home_pos_[i];
+		act_curr_pos_[i] -= act_home_pos_[i];
 
 	// Transform actuator space to joint space to let ros controller knows the robot state, 
 	// and then transform the new joint command back to actuator space command.
 	act_to_jnt_state_.propagate();  // The ros control manager will know the joint space value
-								  // and calculate new commands (joint space) after this step.
+									// and calculate new commands (joint space) after this step.
 	jnt_to_act_state_.propagate();
-
-	// Add home pos, because this is what the real value needs to write to actuator.
-	for(size_t i = 0; i < act_home_pos_.size(); i++)
-	act_curr_pos_[i] += act_home_pos_[i];
 
 	// Update the actuator
 	act_curr_pos_ = communication_interface::update(act_cmd_pos_);
