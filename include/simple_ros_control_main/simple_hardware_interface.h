@@ -15,15 +15,26 @@
 
 #define PI 3.1415926
 
+extern long int count;
+
 class SpHwInterface : public hardware_interface::RobotHW
 {
 public:
   SpHwInterface(unsigned int, unsigned int, std::string, std::vector<std::string>, std::vector<double>);
   ~SpHwInterface();
 
-  //void read();
-  //void write();
+  void jnt_act_initialize(); 
+  void hardware_interface_initialize();
+  void transmission_interface_initialize();
+  void jnt_act_data_wrap();
+  void print_write_data_pos();
+  void print_write_data_vel();
+  void print_read_data_pos();
+  void print_read_data_vel();
   void update();
+  void fake_update();
+  void ethercat_update();
+  void uart_update();
   ros::Time getTime() const;
   ros::Duration getPeriod() const;
 
