@@ -39,10 +39,12 @@ private:
   // Hardware Interface
   hardware_interface::JointStateInterface    jnt_state_interface_;
   hardware_interface::PositionJointInterface jnt_pos_interface_;
+  hardware_interface::VelocityJointInterface jnt_vel_interface_;
 
   // Transmission Interface
   transmission_interface::ActuatorToJointStateInterface act_to_jnt_state_;
   transmission_interface::JointToActuatorStateInterface jnt_to_act_state_;
+  transmission_interface::JointToActuatorVelocityInterface jnt_to_act_vel_;
 
   // Transmissions
   std::vector<transmission_interface::SimpleTransmission> sim_trans_;
