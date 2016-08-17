@@ -20,7 +20,7 @@ extern long int count;
 class SpHwInterface : public hardware_interface::RobotHW
 {
 public:
-  SpHwInterface(unsigned int, unsigned int, std::string, std::vector<std::string>, std::vector<double>);
+  SpHwInterface(unsigned int, unsigned int, std::string, std::string, std::vector<std::string>, std::vector<double>);
   ~SpHwInterface();
 
   void jnt_act_initialize(); 
@@ -31,10 +31,11 @@ public:
   void print_write_data_vel();
   void print_read_data_pos();
   void print_read_data_vel();
-  void update();
-  void fake_update();
-  void ethercat_update();
-  void uart_update();
+  void update_pp();
+  void update_pv();
+  void update_vp();
+  void update_vv();
+  void update_fake();
   ros::Time getTime() const;
   ros::Duration getPeriod() const;
 
@@ -42,6 +43,7 @@ private:
   unsigned int n_dof_;
   unsigned int update_freq_;
   std::string comm_type_;
+  std::string control_type_;
 
   std::vector<std::string> jnt_names_;
   std::vector<double> gear_ratios_;

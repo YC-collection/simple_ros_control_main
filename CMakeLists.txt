@@ -137,7 +137,6 @@ add_library(simple_hardware_interface
 	src/simple_hardware_interface.cpp 
 	src/initialization.cpp
 	src/common.cpp
-	src/protocol_update.cpp
 )
 target_link_libraries(simple_hardware_interface communication_interface)
 #target_link_libraries(sp_robot_hw_interface sp_ethercat ${catkin_LIBRARIES})

@@ -8,7 +8,7 @@ int main(int argc, char **argv)
   ros::NodeHandle nh;
 
   int n_dof_, update_freq_;
-  std::string comm_type_;
+  std::string comm_type_, control_type_;
   std::vector<std::string> jnt_names_;
   std::vector<double> gear_ratios_;
 
@@ -55,6 +55,16 @@ int main(int argc, char **argv)
   else
 	std::cout << "update frequency = " << update_freq_ << std::endl;
 
+
+  if (!nh.getParam("/robot/control_type", control_type_))
+  {
+	ROS_ERROR("Please specify the control type (control_type).");
+	return 1;
+  }
+  else
+	std::cout << "control_type_ = " << control_type_ << std::endl;
+
+
   if (!nh.getParam("/robot/comm_type", comm_type_))
   {
 	ROS_ERROR("Please specify the communication type (n_dof).");
@@ -64,7 +74,7 @@ int main(int argc, char **argv)
 	std::cout << "comm_type_ = " << comm_type_ << std::endl;
 
 
-  SpHwInterface robot(n_dof_, update_freq_, comm_type_, jnt_names_, gear_ratios_);
+  SpHwInterface robot(n_dof_, update_freq_, comm_type_, control_type_, jnt_names_, gear_ratios_);
   controller_manager::ControllerManager cm(&robot, nh);
 
   // start loop
@@ -74,7 +84,19 @@ int main(int argc, char **argv)
 
   while (ros::ok())
   {
-	 robot.update();
+	 if(control_type_ == "pp")
+	   robot.update_pp();
+	 else if(control_type_ == "pv")
+	   robot.update_pv();
+	 else if(control_type_ == "vp")
+	   robot.update_vp();
+	 else if(control_type_ == "vv")
+	   robot.update_vv();
+	 else if(control_type_ == "fake")
+	   robot.update_fake();
+	 else
+	   ROS_ERROR("Invalid control type. Please chose one of [pp, pv, vp, vv].");
+
      cm.update(robot.getTime(), robot.getPeriod());
 	 
 	 rate.sleep();
