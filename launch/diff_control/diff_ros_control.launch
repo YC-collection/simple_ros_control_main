@@ -4,8 +4,9 @@
   <arg name="model" default="$(find simple_robot_description)/robots/simple_diff_robot.xacro"/>
   <arg name="rqt_steering" default="true"/>
   <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
-  <rosparam command="load" file="$(find simple_robot_config)/config/diff_controllers.yaml" />
-  <rosparam command="load" file="$(find simple_robot_config)/config/hardware_interface.yaml" />
+  <!--rosparam command="load" file="$(find simple_robot_config)/config/diff_controllers.yaml" />
+  <rosparam command="load" file="$(find simple_robot_config)/config/hardware_interface.yaml" /-->
+  <rosparam command="load" file="$(find simple_robot_config)/config/diff_ros_control.yaml"/>
 
   <!--Spawn Controller-->
   <node name="diff_controller_spawner" pkg="controller_manager" type="spawner"
