@@ -4,9 +4,7 @@
   <!-- send robot urdf to param server -->
   <arg name="model" default="$(find simple_robot_description)/robots/simple_robot.urdf"/>
   <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)"/>
-
-  <rosparam command="load" file="$(find simple_robot_config)/config/arm_controllers.yaml"/>
-  <rosparam command="load" file="$(find simple_robot_config)/config/hardware_interface.yaml"/>
+  <rosparam command="load" file="$(find simple_robot_config)/config/arm_ros_control.yaml"/>
 
   <!--Spawn Controller-->
   <node name="arm_controller_spawner" pkg="controller_manager" type="spawner"
