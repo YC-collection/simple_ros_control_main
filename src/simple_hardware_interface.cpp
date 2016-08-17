@@ -34,14 +34,17 @@ SpHwInterface::SpHwInterface(
   transmission_interface_initialize();
 
   // Initialize communication interface
-  communication_interface::init(comm_type_, n_dof_);
-
-  if(comm_type_ == "ethercat")
+  if(control_type_ != "fake")
   {
-    act_home_pos_ = communication_interface::get_home_pos();
-    act_curr_pos_ = communication_interface::get_home_pos();
-	for(int i = 0; i < act_curr_pos_.size(); i++)
-		std::cout << act_curr_pos_[i] << std::endl;
+    communication_interface::init(comm_type_, n_dof_);
+
+    if(comm_type_ == "ethercat")
+    {
+      act_home_pos_ = communication_interface::get_home_pos();
+      act_curr_pos_ = communication_interface::get_home_pos();
+	  for(int i = 0; i < act_curr_pos_.size(); i++)
+		  std::cout << act_curr_pos_[i] << std::endl;
+    }
   }
 }
 
