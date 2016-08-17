@@ -74,10 +74,8 @@ int main(int argc, char **argv)
 
   while (ros::ok())
   {
-     //robot.read();
 	 robot.update();
      cm.update(robot.getTime(), robot.getPeriod());
-     //robot.write();
 	 
 	 rate.sleep();
   }
