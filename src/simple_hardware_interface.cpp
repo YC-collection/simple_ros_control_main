@@ -135,7 +135,7 @@ void SpHwInterface::update_fake()
 {
 	// Fake reading
 	for(size_t i = 0; i< n_dof_; i++)
-	act_curr_pos_[i] = act_cmd_pos_[i];
+	  act_curr_pos_[i] = act_cmd_pos_[i];
 
 	act_to_jnt_state_.propagate();
 	jnt_to_act_state_.propagate();
