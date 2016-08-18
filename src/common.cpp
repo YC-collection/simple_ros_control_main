@@ -48,5 +48,5 @@ ros::Time SpHwInterface::getTime() const
 
 ros::Duration SpHwInterface::getPeriod() const 
 {
-    return ros::Duration(0.001);
+    return ros::Duration(1.0 / update_freq_);
 }
