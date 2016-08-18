@@ -15,15 +15,27 @@
 
 #define PI 3.1415926
 
+extern long int count;
+
 class SpHwInterface : public hardware_interface::RobotHW
 {
 public:
-  SpHwInterface(unsigned int, unsigned int, std::string, std::vector<std::string>, std::vector<double>);
+  SpHwInterface(unsigned int, unsigned int, std::string, std::string, std::vector<std::string>, std::vector<double>);
   ~SpHwInterface();
 
-  //void read();
-  //void write();
-  void update();
+  void jnt_act_initialize(); 
+  void hardware_interface_initialize();
+  void transmission_interface_initialize();
+  void jnt_act_data_wrap();
+  void print_write_data_pos();
+  void print_write_data_vel();
+  void print_read_data_pos();
+  void print_read_data_vel();
+  void update_pp();
+  void update_pv();
+  void update_vp();
+  void update_vv();
+  void update_fake();
   ros::Time getTime() const;
   ros::Duration getPeriod() const;
 
@@ -31,6 +43,7 @@ private:
   unsigned int n_dof_;
   unsigned int update_freq_;
   std::string comm_type_;
+  std::string control_type_;
 
   std::vector<std::string> jnt_names_;
   std::vector<double> gear_ratios_;
@@ -39,10 +52,12 @@ private:
   // Hardware Interface
   hardware_interface::JointStateInterface    jnt_state_interface_;
   hardware_interface::PositionJointInterface jnt_pos_interface_;
+  hardware_interface::VelocityJointInterface jnt_vel_interface_;
 
   // Transmission Interface
   transmission_interface::ActuatorToJointStateInterface act_to_jnt_state_;
   transmission_interface::JointToActuatorStateInterface jnt_to_act_state_;
+  transmission_interface::JointToActuatorVelocityInterface jnt_to_act_vel_;
 
   // Transmissions
   std::vector<transmission_interface::SimpleTransmission> sim_trans_;
