@@ -53,10 +53,15 @@ SpHwInterface::~SpHwInterface()
 
 void SpHwInterface::update_pp()
 {
+
 	// Substract home pos, so the act_curr_pos_ will be initialized as zero. 
 	// This makes the ros control manager think the robot joints are at 0 degree.
 	for(size_t i = 0; i < act_home_pos_.size(); i++)
 		act_curr_pos_[i] -= act_home_pos_[i];
+#if 1
+	if(count % 100 ==0)
+	  print_read_data_pos();
+#endif
 
 	// Transform actuator space to joint space to let ros controller knows the robot state, 
 	// and then transform the new joint command back to actuator space command.
