@@ -84,7 +84,31 @@ void SpHwInterface::update_pv()
 {}
 
 void SpHwInterface::update_vp()
-{}
+{
+#if 1
+	if(count % (update_freq_ / 10) ==0)
+	  print_read_data_pos();
+#endif
+
+	act_to_jnt_state_.propagate();  
+	jnt_to_act_state_.propagate();
+
+	// TODO: use update_vp instead
+	// Update the actuator
+	act_curr_vel_ = communication_interface::update_vv(act_cmd_vel_);
+
+	// fake position
+	for(int i = 0; i < n_dof_; i++)
+	  act_curr_pos_[i] += act_curr_vel_[i] * this->getPeriod().toSec();
+
+#if 1
+	if(count % (update_freq_ / 10) ==0)
+	  print_write_data_vel();
+#endif
+
+    count ++;
+}
+
 
 void SpHwInterface::update_vv()
 {
