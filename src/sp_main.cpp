@@ -78,7 +78,7 @@ int main(int argc, char **argv)
   controller_manager::ControllerManager cm(&robot, nh);
 
   // start loop
-  ros::Rate rate(1.0 / robot.getPeriod().toSec());
+  ros::Rate rate(update_freq_);
   ros::AsyncSpinner spinner(1);
   spinner.start();
 

@@ -53,10 +53,15 @@ SpHwInterface::~SpHwInterface()
 
 void SpHwInterface::update_pp()
 {
+
 	// Substract home pos, so the act_curr_pos_ will be initialized as zero. 
 	// This makes the ros control manager think the robot joints are at 0 degree.
 	for(size_t i = 0; i < act_home_pos_.size(); i++)
 		act_curr_pos_[i] -= act_home_pos_[i];
+#if 1
+	if(count % (update_freq_ / 10) ==0)
+	  print_read_data_pos();
+#endif
 
 	// Transform actuator space to joint space to let ros controller knows the robot state, 
 	// and then transform the new joint command back to actuator space command.
@@ -68,7 +73,7 @@ void SpHwInterface::update_pp()
 	act_curr_pos_ = communication_interface::update_pp(act_cmd_pos_);
 
 #if 1
-	if(count % 100 ==0)
+	if(count % (update_freq_ / 10) ==0)
 	  print_write_data_pos();
 #endif
 
@@ -79,12 +84,36 @@ void SpHwInterface::update_pv()
 {}
 
 void SpHwInterface::update_vp()
-{}
+{
+#if 1
+	if(count % (update_freq_ / 10) ==0)
+	  print_read_data_pos();
+#endif
+
+	act_to_jnt_state_.propagate();  
+	jnt_to_act_state_.propagate();
+
+	// TODO: use update_vp instead
+	// Update the actuator
+	act_curr_vel_ = communication_interface::update_vv(act_cmd_vel_);
+
+	// fake position
+	for(int i = 0; i < n_dof_; i++)
+	  act_curr_pos_[i] += act_curr_vel_[i] * this->getPeriod().toSec();
+
+#if 1
+	if(count % (update_freq_ / 10) ==0)
+	  print_write_data_vel();
+#endif
+
+    count ++;
+}
+
 
 void SpHwInterface::update_vv()
 {
 #if 1
-	if(count % 100 ==0)
+	if(count % (update_freq_ / 10) ==0)
 	  print_read_data_vel();
 #endif
 
@@ -95,7 +124,7 @@ void SpHwInterface::update_vv()
 	act_curr_vel_ = communication_interface::update_vv(act_cmd_vel_);
 
 #if 1
-	if(count % 100 ==0)
+	if(count % (update_freq_ / 10) ==0)
 	  print_write_data_vel();
 #endif
 
@@ -106,13 +135,13 @@ void SpHwInterface::update_fake()
 {
 	// Fake reading
 	for(size_t i = 0; i< n_dof_; i++)
-	act_curr_pos_[i] = act_cmd_pos_[i];
+	  act_curr_pos_[i] = act_cmd_pos_[i];
 
 	act_to_jnt_state_.propagate();
 	jnt_to_act_state_.propagate();
 
 #if 1
-	if(count % 100 ==0)
+	if(count % (update_freq_ / 10) ==0)
 	  print_write_data_pos();
 #endif
 
