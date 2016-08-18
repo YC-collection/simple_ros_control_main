@@ -85,7 +85,7 @@ void SpHwInterface::update_pv()
 
 void SpHwInterface::update_vp()
 {
-#if 1
+#if 0
 	if(count % (update_freq_ / 10) ==0)
 	  print_read_data_pos();
 #endif
@@ -101,7 +101,7 @@ void SpHwInterface::update_vp()
 	for(int i = 0; i < n_dof_; i++)
 	  act_curr_pos_[i] += act_curr_vel_[i] * this->getPeriod().toSec();
 
-#if 1
+#if 0
 	if(count % (update_freq_ / 10) ==0)
 	  print_write_data_vel();
 #endif
