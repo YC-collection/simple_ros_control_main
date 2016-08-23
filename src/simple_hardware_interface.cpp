@@ -89,17 +89,39 @@ void SpHwInterface::update_vp()
 	if(count % (update_freq_ / 10) ==0)
 	  print_read_data_pos();
 #endif
+	std::vector<double> act_curr_pos_temp_;
+	double r_pos_temp_ = 0, l_pos_temp_ = 0;
 
 	act_to_jnt_state_.propagate();  
+
+	for(int i = 0; i < jnt_curr_pos_.size(); i++)
+		std::cout << jnt_curr_pos_[i] << " ";
+	std::cout << std::endl;
+
 	jnt_to_act_state_.propagate();
 
 	// TODO: use update_vp instead
 	// Update the actuator
-	act_curr_vel_ = communication_interface::update_vv(act_cmd_vel_);
+	act_curr_pos_temp_ = communication_interface::update_vv(act_cmd_vel_);
+	r_pos_temp_ = -act_curr_pos_temp_[0] / 227328;
+	l_pos_temp_ = act_curr_pos_temp_[1] / 227328;
+#if 0
+	std::cout << "enc_value: " << r_pos_temp_ << " " << l_pos_temp_;
+	std::cout << std::endl;
+#endif
+	act_curr_pos_[0] = r_pos_temp_;
+	act_curr_pos_[1] = l_pos_temp_;
 
+#if 0
 	// fake position
+	std::cout << "fake_value: ";
 	for(int i = 0; i < n_dof_; i++)
-	  act_curr_pos_[i] += act_curr_vel_[i] * this->getPeriod().toSec();
+	{
+	  act_curr_pos_[i] += act_cmd_vel_[i] * this->getPeriod().toSec();
+	  std::cout << act_curr_pos_[i] << " ";
+	}
+	std::cout << std::endl;
+#endif
 
 #if 0
 	if(count % (update_freq_ / 10) ==0)
