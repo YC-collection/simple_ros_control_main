@@ -2,6 +2,8 @@
 #include "simple_ros_control_main/simple_hardware_interface.h"
 #include "communication_interface/communication_interface.h"
 
+#define ENC_FULL 227328
+#define PI 3.1415926
 long int count = 0;
 
 SpHwInterface::SpHwInterface(
@@ -103,8 +105,8 @@ void SpHwInterface::update_vp()
 	// TODO: use update_vp instead
 	// Update the actuator
 	act_curr_pos_temp_ = communication_interface::update_vv(act_cmd_vel_);
-	r_pos_temp_ = -act_curr_pos_temp_[0] / 227328;
-	l_pos_temp_ = act_curr_pos_temp_[1] / 227328;
+	r_pos_temp_ = -(act_curr_pos_temp_[0] / ENC_FULL) * 60;
+	l_pos_temp_ = (act_curr_pos_temp_[1] / ENC_FULL) * 60;
 #if 0
 	std::cout << "enc_value: " << r_pos_temp_ << " " << l_pos_temp_;
 	std::cout << std::endl;
