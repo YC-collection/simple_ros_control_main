@@ -14,64 +14,63 @@ int main(int argc, char **argv)
 
   if (!nh.getParam("/robot/n_dof", n_dof_))
   {
-	ROS_ERROR("Please specify the number of the degree of freedom (n_dof).");
-	return 1;
+    ROS_ERROR("Please specify the number of the degree of freedom (n_dof).");
+    return 1;
   }
   else
-	std::cout << "n_dof_ = " << n_dof_ << std::endl;
+    std::cout << "n_dof_ = " << n_dof_ << std::endl;
 
   if (!nh.getParam("/robot/joints", jnt_names_))
   {
-	ROS_ERROR("Please specify joint names (joints).");
-	return 1;
+    ROS_ERROR("Please specify joint names (joints).");
+    return 1;
   }
   else
   {
-	std::cout << "jnt names: ";
-	for(int i = 0; i < jnt_names_.size(); i++)
-	  std::cout << jnt_names_[i] << " ";
-	std::cout << std::endl;
+    std::cout << "jnt names: ";
+    for(int i = 0; i < jnt_names_.size(); i++)
+      std::cout << jnt_names_[i] << " ";
+    std::cout << std::endl;
   }
 
   if (!nh.getParam("/robot/gear_ratios", gear_ratios_))
   {
-	ROS_ERROR("Please specify gear ratios (gear_ratios).");
-	return 1;
+    ROS_ERROR("Please specify gear ratios (gear_ratios).");
+    return 1;
   }
   else
   {
-	std::cout << "gear ratios: ";
-	for(int i = 0; i < gear_ratios_.size(); i++)
-	  std::cout << gear_ratios_[i] << " ";
-	std::cout << std::endl;
-
+    std::cout << "gear ratios: ";
+    for(int i = 0; i < gear_ratios_.size(); i++)
+      std::cout << gear_ratios_[i] << " ";
+    std::cout << std::endl;
   }
 
   if (!nh.getParam("/robot/update_freq", update_freq_))
   {
-	ROS_ERROR("Please specify update frequency (update_freq).");
-	return 1;
+    ROS_ERROR("Please specify update frequency (update_freq).");
+    return 1;
   }
   else
-	std::cout << "update frequency = " << update_freq_ << std::endl;
+    std::cout << "update frequency = " << update_freq_ << std::endl;
 
 
   if (!nh.getParam("/robot/control_type", control_type_))
   {
-	ROS_ERROR("Please specify the control type (control_type).");
-	return 1;
+    ROS_ERROR("Please specify the control type (control_type).");
+    return 1;
   }
   else
-	std::cout << "control_type_ = " << control_type_ << std::endl;
+    std::cout << "control_type_ = " << control_type_ << std::endl;
 
 
   if (!nh.getParam("/robot/comm_type", comm_type_))
   {
-	ROS_ERROR("Please specify the communication type (n_dof).");
-	return 1;
+    ROS_ERROR("Please specify the communication type (comm_type).");
+    return 1;
   }
   else
-	std::cout << "comm_type_ = " << comm_type_ << std::endl;
+    std::cout << "comm_type_ = " << comm_type_ << std::endl;
 
 
   SpHwInterface robot(n_dof_, update_freq_, comm_type_, control_type_, jnt_names_, gear_ratios_);
