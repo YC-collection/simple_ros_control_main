@@ -14,3 +14,6 @@ setActivity("SpRosControl",0.001,HighestPriority,ORO_SCHED_RT)
 
 ## Configure the SpRosControl component
 SpRosControl.configure()
+
+## Start the SpRosControl component
+SpRosControl.start()
