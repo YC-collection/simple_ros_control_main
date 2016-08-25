@@ -1,0 +1,22 @@
+#!/usr/bin/env deployer-gnulinux
+
+import("rtt_ros")
+
+## Need rtt_rosnode so ros::init is called
+import("rtt_rosnode")
+ros.import("simple_ros_control_main")
+ros.import("rtt_rosparam")
+
+## Load a HelloRobot component
+loadComponent("SpRosControl","SpRosControl")
+
+## Give it a periodic activity
+setActivity("SpRosControl",0.001,HighestPriority,ORO_SCHED_RT)
+
+## Configure the EthercatIGH component
+SpRosControl.configure()
+
+## Start it
+#SpRosControl.start()
+
+

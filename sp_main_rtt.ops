@@ -1,0 +1,16 @@
+#!/usr/bin/env deployer-gnulinux
+
+import("rtt_ros")
+import("rtt_rosnode")
+ros.import("rtt_rosparam")
+
+## Load SpRosControl component
+ros.import("simple_ros_control_main")
+loadComponent("SpRosControl","SpRosControl")
+loadService("SpRosControl","rosparam")
+
+## Give it a periodic activity
+setActivity("SpRosControl",0.001,HighestPriority,ORO_SCHED_RT)
+
+## Configure the SpRosControl component
+SpRosControl.configure()

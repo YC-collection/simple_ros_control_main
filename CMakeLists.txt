@@ -8,6 +8,8 @@ find_package(catkin REQUIRED COMPONENTS
   controller_manager
   hardware_interface
   roscpp
+  rtt_ros
+  rtt_rosclock
   communication_interface
 )
 
@@ -115,7 +117,7 @@ endif()
 catkin_package(
    INCLUDE_DIRS include
 #  LIBRARIES iceira_diff_hardware_interface iceira_diff_serial
-   CATKIN_DEPENDS controller_manager hardware_interface roscpp communication_interface
+   CATKIN_DEPENDS controller_manager hardware_interface roscpp communication_interface rtt_ros
 #  DEPENDS system_lib
 )
 
@@ -154,6 +156,12 @@ add_executable(simple_ros_control_main src/sp_main.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(simple_ros_control_main simple_hardware_interface ${catkin_LIBRARIES})
+
+add_definitions(-DRTT_COMPONENT)
+orocos_component(simple_ros_control_main_rtt src/sp_main_rtt.cpp)
+target_link_libraries(simple_ros_control_main_rtt simple_hardware_interface ${catkin_LIBRARIES})
+
+orocos_generate_package()
 
 #############
 ## Install ##
